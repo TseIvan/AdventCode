@@ -15,16 +15,14 @@ def computePoss(x:int = 206938,y:int = 679128) -> int:
 
 def repeatingSeq(number):
     # Every number is ensured a adjacent number
-    dupe = set([x for x in str(number) if str(number).count(x) >= 2])
-    if len(dupe) == 1:
-        if str(number).count(next(iter(dupe))) == 2:
-            return True
-        return False # Only one repeating and it repeats more than twice
-    else:
-        for i in dupe:
-            if str(number).count(i) == 2:
-                return True
-        return False
+
+    A = set([x for x in str(number) if str(number).count(x) == 2]) # Equal to 2
+    B = set([x for x in str(number) if str(number).count(x) >= 3]) # Greater than 3
+    # If it has len 1 then the value contained must not appear in greater than 3 len(A-B) = 0.
+    # If the length of set A is greater than 1 then there are more than one possible adjacent characters, at minimum one of them has to not appear in greater than 3 len(B-A) != 0
+    if (len(A-B) != 0 and len(A) == 1) or (len(A-B) != 0):
+        return True
+    return False
 
 def changedCriteria(x:int = 206938,y:int = 679128) -> int:
     counter = 0
