@@ -1,4 +1,4 @@
-def computePoss(x:int = 206938,y:int = 679128) -> int:
+def computePoss(x:int = 206938,y:int = 679128, p2:bool = False) -> int:
     # 206938-679128 was my key
     # It is a six-digit number.
     # The value is within the range given in your puzzle input.
@@ -8,9 +8,11 @@ def computePoss(x:int = 206938,y:int = 679128) -> int:
     counter = 0
     for number in range(x, y+1):
         if len(set(str(number))) <= 5: # Since there could be possibliity of being adjacent in any of the 6 positions we know that it set would have len <= 5
-            if number == int("".join(sorted(str(number)))): # Left to right it must never decrease. eg 577999 has set len = 3 sorted it would be 5,7,7,9,9,9 and is within bounds
-                print(number)
-                counter += 1
+            if number == int("".join(sorted(str(number)))): # Left to right it must never decrease. eg 577999 has set len = 3 sorted it would be 5,7,7,9,9,9 and is within bounds. It's either already sorted or invalid
+                if p2 and repeatingSeq(int(number)):
+                    counter += 1
+                elif not p2:
+                    counter += 1
     return counter
 
 def repeatingSeq(number):
@@ -24,21 +26,9 @@ def repeatingSeq(number):
         return True
     return False
 
-def changedCriteria(x:int = 206938,y:int = 679128) -> int:
-    counter = 0
-    for number in range(x, y+1):
-        if len(set(str(number))) <= 5: # Since there could be possibliity of being adjacent in any of the 6 positions we know that it set would have len <= 5
-            if number == int("".join(sorted(str(number)))): # Left to right it must never decrease. eg 577999 has set len = 3 sorted it would be 5,7,7,9,9,9 and is within bounds
-                if repeatingSeq(int(number)):
-                    counter += 1
-    return counter
-
 def main():
-    print(changedCriteria())
-    # print(repeatingSeq(666668))
-    # print(repeatingSeq(123444))
-    # print(repeatingSeq(112233))
-
+    print(computePoss())
+    print(computePoss(p2=True))
     return
 if __name__ == "__main__":
     main()
