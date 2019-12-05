@@ -3,25 +3,6 @@ import copy
 OP_ADD = 1
 OP_MUL = 2
 OP_END = 99
-
-def day1(f1='adventcode.txt',p2 = False):
-    with open(f1, 'r') as fp:
-        text_from_file = fp.readlines()
-    summation = 0
-    for line in text_from_file:
-        if isinstance(int(line), int):
-            if (p2):
-                n = int(line)
-                while (True):
-                    n = (n//3 -2)
-                    if (n < 0):
-                        break
-                    else:
-                        summation += n
-            else:
-                summation += (int(line)//3 -2)
-    return summation
-
 def opcodeProgram(x,y,opcode) -> list:
     # Opcode 1 = Add, retrieve(index) and retrieve(index), add to pos at index+3
     # Opcode 2 = Multiplies, retrieve(index) and retrieve(index), add to pos at index+3
