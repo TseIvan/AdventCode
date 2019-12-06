@@ -27,10 +27,7 @@ def day7(f1:str="day7.txt", p2:bool = False):
     for k,v in tracking.items():
         indirect_orbit += len(v.ancestors)
     print(indirect_orbit)
-    # diff = set()
-    # Set is used to store all nodes, if we see nodes again in 'YOU' this indicates commonality between the two and can be removed. Else add to it because it is a node we that is uncommon
-    # Result is set length of minimum commonality
-    # 454
+    # Use symmetric difference for minimum commonality
     santa = set(tracking['SAN'].ancestors)
     you = set(tracking['YOU'].ancestors)
     print(len(santa^you))
