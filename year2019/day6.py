@@ -1,6 +1,6 @@
 from anytree import Node, RenderTree, AsciiStyle, LevelOrderIter, Walker, find, findall
 # python library anytree: https://pypi.org/project/anytree/
-# Could be done strictly using dictionary but I'm trying out anytree for fun visualization
+# Trying out anytree for fun, alternative is to write own Tree Struct
 # Documentation - https://anytree.readthedocs.io/en/latest/#
 
 def day7(f1:str="day7.txt", p2:bool = False):
