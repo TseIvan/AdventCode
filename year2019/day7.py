@@ -1,21 +1,9 @@
-from anytree import Node, RenderTree, AsciiStyle, LevelOrderIter, Walker
+from anytree import Node, RenderTree, AsciiStyle, LevelOrderIter, Walker, find, findall
 # python library anytree: https://pypi.org/project/anytree/
 # Could be done strictly using dictionary but I'm trying out anytree for fun visualization
 # Documentation - https://anytree.readthedocs.io/en/latest/#
 
-# udo = Node("Udo")
-# marc = Node("Marc", parent=udo)
-# lian = Node("Lian", parent=marc)
-# dan = Node("Dan", parent=udo)
-# jet = Node("Jet", parent=dan)
-# jan = Node("Jan", parent=dan)
-# joe = Node("Joe")
-# udo.parent = joe
-#
-# for pre, fill, node in RenderTree(joe):
-#     print("%s%s" % (pre, node.name))
-
-def day7(f1="day7.txt", p2 = False):
+def day7(f1:str="day7.txt", p2:bool = False):
     orbit_list = [line.split(')') for line in open(f1, 'r').read().split('\n')]
     tracking = {}
     for planet in orbit_list:
@@ -39,5 +27,11 @@ def day7(f1="day7.txt", p2 = False):
     for k,v in tracking.items():
         indirect_orbit += len(v.ancestors)
     print(indirect_orbit)
-
+    # diff = set()
+    # Set is used to store all nodes, if we see nodes again in 'YOU' this indicates commonality between the two and can be removed. Else add to it because it is a node we that is uncommon
+    # Result is set length of minimum commonality
+    # 454
+    santa = set(tracking['SAN'].ancestors)
+    you = set(tracking['YOU'].ancestors)
+    print(len(santa^you))
 day7()
