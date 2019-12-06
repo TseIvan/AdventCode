@@ -5,9 +5,10 @@ from anytree import Node, RenderTree, AsciiStyle, LevelOrderIter, Walker, find, 
 
 
 # Possibility to map into dictionary then perform BFS for returning depth
-# YOU and SAN are considered "terminating" would performance be bad? Should be O(N) of dictionary
+# YOU and SAN are considered "terminating" would performance be bad going through dictionary at most O(N) where N is length of textfile
 # We know that COM is initial center of mass start state
 global_counter = 0
+global_set = set()
 def day6(f1:str="day6.txt"):
     orbit_list = [line.split(')') for line in open(f1, 'r').read().split('\n')]
     tracking = {}
@@ -37,13 +38,13 @@ def day6(f1:str="day6.txt"):
     print(indirect_orbit)
 
     # Use symmetric difference for minimum commonality
-    # santa = set(tracking['SAN'].ancestors)
-    # you = set(tracking['YOU'].ancestors)
-    # print(len(santa^you))
+    santa = set(tracking['SAN'].ancestors)
+    you = set(tracking['YOU'].ancestors)
+    print(len(santa^you))
 
     return
 
-def indirect_orbit(d:dict,initial:list = ['COM'],counter:int = 0) -> int:
+def indirect_orbit(d:dict,initial:list = ['COM'],counter:int = 0) -> None:
     global global_counter
     global_counter += counter*len(initial)
     for planet in initial:
@@ -59,14 +60,12 @@ def day6_alternative(f1:str="day6.txt"):
                 orbit_dict[planet[0]] = [planet[1]]
             else:
                 orbit_dict[planet[0]].append(planet[1])
-
-    # Loop through all planets connected to that until depth recursion.
     indirect_orbit(orbit_dict,counter=0)
     print(global_counter)
 
 def main():
     day6()
-    day6_alternative()
+    # day6_alternative()
     return
 if __name__ == "__main__":
     main()
