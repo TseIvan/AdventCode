@@ -8,7 +8,9 @@ from anytree import Node, RenderTree, AsciiStyle, LevelOrderIter, Walker, find, 
 # YOU and SAN are considered "terminating" would performance be bad going through dictionary at most O(N) where N is length of textfile
 # We know that COM is initial center of mass start state
 global_counter = 0
-global_set = set()
+san_set = set()
+you_set = set()
+
 def day6(f1:str="day6.txt"):
     orbit_list = [line.split(')') for line in open(f1, 'r').read().split('\n')]
     tracking = {}
@@ -50,22 +52,40 @@ def indirect_orbit(d:dict,initial:list = ['COM'],counter:int = 0) -> None:
     for planet in initial:
         if planet in d:
             indirect_orbit(d,d[planet],counter+1)
+def minimumCommonality(d,initial,a_set):
+    for planet in initial:
+        if planet in d:
+            a_set.add(planet)
+            minimumCommonality(d,d[planet],a_set)
+    return
 
 def day6_alternative(f1:str="day6.txt"):
     orbit_list = [line.split(')') for line in open(f1, 'r').read().split('\n')]
     orbit_dict = {}
+    reverse_dict = {}
     for planet in orbit_list:
         if len(planet) == 2:
             if planet[0] not in orbit_dict:
                 orbit_dict[planet[0]] = [planet[1]]
             else:
                 orbit_dict[planet[0]].append(planet[1])
-    indirect_orbit(orbit_dict,counter=0)
+            if planet[1] not in reverse_dict:
+                reverse_dict[planet[1]] = [planet[0]]
+            else:
+                reverse_dict[planet[1]].append(planet[0])
+
+    indirect_orbit(orbit_dict,counter = 0)
     print(global_counter)
+    minimumCommonality(reverse_dict,['YOU'],you_set)
+    minimumCommonality(reverse_dict,['SAN'],san_set)
+    LCA = san_set^you_set
+    LCA.discard('YOU')
+    LCA.discard('SAN')
+    print(len(LCA))
 
 def main():
-    day6()
-    # day6_alternative()
+    # day6()
+    day6_alternative()
     return
 if __name__ == "__main__":
     main()
