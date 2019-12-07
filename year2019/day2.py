@@ -1,8 +1,5 @@
 import copy
 
-OP_ADD = 1
-OP_MUL = 2
-OP_END = 99
 def opcodeProgram(x,y,opcode) -> list:
     # Opcode 1 = Add, retrieve(index) and retrieve(index), add to pos at index+3
     # Opcode 2 = Multiplies, retrieve(index) and retrieve(index), add to pos at index+3
