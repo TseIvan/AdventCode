@@ -1,4 +1,5 @@
 from anytree import Node, RenderTree, AsciiStyle, LevelOrderIter, Walker, find, findall
+from collections import defaultdict
 # python library anytree: https://pypi.org/project/anytree/
 # Trying out anytree for fun, alternative is to write own Tree Struct
 # Documentation - https://anytree.readthedocs.io/en/latest/#
@@ -61,18 +62,12 @@ def minimumCommonality(d,initial,a_set):
 
 def day6_alternative(f1:str="day6.txt"):
     orbit_list = [line.split(')') for line in open(f1, 'r').read().split('\n')]
-    orbit_dict = {}
-    reverse_dict = {}
+    orbit_dict = defaultdict(list)
+    reverse_dict = defaultdict(list)
     for planet in orbit_list:
         if len(planet) == 2:
-            if planet[0] not in orbit_dict:
-                orbit_dict[planet[0]] = [planet[1]]
-            else:
-                orbit_dict[planet[0]].append(planet[1])
-            if planet[1] not in reverse_dict:
-                reverse_dict[planet[1]] = [planet[0]]
-            else:
-                reverse_dict[planet[1]].append(planet[0])
+            orbit_dict[planet[0]].append(planet[1])
+            reverse_dict[planet[1]].append(planet[0])
 
     indirect_orbit(orbit_dict,counter = 0)
     print(global_counter)
