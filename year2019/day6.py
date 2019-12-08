@@ -64,6 +64,7 @@ def day6_alternative(f1:str="day6.txt"):
     orbit_list = [line.split(')') for line in open(f1, 'r').read().split('\n')]
     orbit_dict = defaultdict(list)
     reverse_dict = defaultdict(list)
+    print(orbit_dict)
     for planet in orbit_list:
         if len(planet) == 2:
             orbit_dict[planet[0]].append(planet[1])
