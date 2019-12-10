@@ -1,0 +1,65 @@
+State spaces for Tic Tac Toe:
+  max amount of nodes are <= 9! for 3x3 board, reasoning: once you place a X or O there are 8 remaining possible places, ad finem. so 9*8*..*1 = 9!
+  We can do better because with <= 3^9 because each position on the board has at most 3 poss, empty, X or O
+  Bounded further by the fact that most of these positions cannot be reached, also isomorphic positions because its symmetric
+  Using isomorphic -> 6500 Nodes
+  Using isomorphic + alphabeta -> 3025 nodes
+
+State spaces for Hex:
+  3x3 is <= 3^9 because each position can be empty, black or white.
+  6x6 <= 3^36
+
+State spaces for Go:
+  2x2: With the given ordering of passing first, only 1446 nodes are searched, to a depth of no more than 22.
+  Important: Minimax does not depend on move ordering, but Alphabeta does. Minimax reaches termination therefore it does not matter.
+  Alphabeta cares about repeat and position seen before so depending on the position order if you do something like DP it can be reduced
+
+Notes about Hex:
+  Must-Play Analysis -> consider all virtual connections, not playing in these spots will allow your opponent to block you there
+  Inferior cells -> Placing the cells in these areas dont improve position because the position that can be reached using the one placed is not minimal joinset
+
+Notes about Go:
+  TTT Rules
+  Black moves first then White, score is given as Black-White
+  turn: pass or move that does not recreate previous position
+  game ends after 2 consecutive passes
+  Scoring: Number of stones + territory
+  TT allows Suicide, most computer does not allow Suicide
+
+Notes about Maze Traversal:
+  Random walk works poorly with 1/(k^t); t = iteration amount, k = amount of neighbors
+
+  BFS = FIFO
+  DFS = Recurse as soon as unseen nbr found
+  Both are O(V+E)
+
+Notes about Sliding Tile:
+  Only have are solvable
+  (r*c)! / 2 -> if we can start from fixed state we know whether or not its solvable and the program can ignore unsolvable paths
+
+  (r*c)! why? because it has that many positions and once you place a number you need to repeat until ad finem so 9*8...*1
+
+  solvable requires: odd col -> even number of inversions
+                     even col -> blanks row from bottom != inversion parity
+
+  Solving using BFS will give shortest solution but computationally expensive
+  A* will give shortest solution if heuristic is valid
+  Heuristic has to be less than or equal to actual cost
+
+  A* Algorithm:
+  Priority = Cost + Heuristic
+
+  At next step only include current cost will always increase, do not add heuristic to the next cost as heuristic only helps determine priority
+
+  A* Will ALWAYS find shortest solution is heuristic estimate is less than or equal to true cost: Manhattan distance and # of misplayed tiles
+  Manhattan distance is better than Misplaced Tiles since its heuristic is greater but still less than true cost
+
+  A* beats the special purpose algorithm.
+  SP solves first row then second row then last 2 on first column and last 2 on second column on a 4x4. This is worse than Heuristic. Recall Solving a 2x3 where we slot 1 and 4 in their correct position before rotating for 2 3 5.
+
+Notes about Nim:
+    nim (10 10 10 10 10) has 50 children from root
+    O(product_pilesizes * sum_pilesizes)
+    (0 5 7) xorsum 010 winning, no
+    (1 5 7) xorsum 011 winning, no
+    (2 5 7) xorsum 000 losing, yes
