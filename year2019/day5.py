@@ -1,6 +1,13 @@
 import copy
 
-input_instruction = 5
+def parseFile(f1:str="day5.txt")->list:
+    with open(f1, 'r') as fp:
+        text_from_file = fp.readlines()
+    opcode = []
+    for line in text_from_file:
+        for char in line.split(","):
+            opcode.append(int(char))
+    return opcode
 
 def decompose(opcode_list:list,instruct:int,index:int) -> dict:
     instruct = [int(x) for x in str(instruct)]
@@ -16,8 +23,10 @@ def decompose(opcode_list:list,instruct:int,index:int) -> dict:
 
     return {'first_param':first,'second_param':second,'addr':third}
 
-def day5()->None:
-    opcode_list = parseFile()
+def day5(opcode_list:list = parseFile(),input_instruction:list=[5])->int:
+    print("-- Beginning New Run --")
+    opcode_list = copy.deepcopy(opcode_list)
+    input_instruction = copy.deepcopy(input_instruction)
     index = 0
     while index < len(opcode_list):
         instruct = opcode_list[index]
@@ -30,11 +39,13 @@ def day5()->None:
             opcode_list[params.get('addr')] = opcode_list[params.get('first_param')] * opcode_list[params.get('second_param')]
             index += 4
         elif operation == 3: # storage instruction increases index by 2
-            opcode_list[params.get('first_param')] = input_instruction
+            opcode_list[params.get('first_param')] = input_instruction[0]
+            input_instruction.pop(0)
             index += 2
         elif operation == 4: # print instruction increases index by 2
             if opcode_list[index+2] == 99: # Check two indexes ahead. When putting this in it's own elif decompose will reach IndexError.
                 print("Operation Code 99, terminating. Final result = %s" % opcode_list[params.get('first_param')],flush=True)
+                return opcode_list[params.get('first_param')]
                 break
             else:
                 print("Output Diagnostic Test %s" % opcode_list[params.get('first_param')] ,flush=True)
@@ -65,16 +76,6 @@ def day5()->None:
             else:
                 opcode_list[params.get('addr')] = 0
             index += 4
-    return None
-
-def parseFile(f1:str="day5.txt")->list:
-    with open(f1, 'r') as fp:
-        text_from_file = fp.readlines()
-    opcode = []
-    for line in text_from_file:
-        for char in line.split(","):
-            opcode.append(int(char))
-    return opcode
 
 def main():
     day5()
