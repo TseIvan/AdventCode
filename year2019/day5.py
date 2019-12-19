@@ -1,74 +1,83 @@
 import copy
 
-input_instruction = 1
+input_instruction = 5
 
-def decompose(opcode,instr,index):
-    index = copy.deepcopy(index)
-    str_instr = str(instr)
-    parameter_modes = ([0]*(5-len(str_instr))) + list(str_instr) # [0, '1', '0', '0', '2']
-    print(parameter_modes)
-    print(parameter_modes[0])
-    print(parameter_modes[1])
-    print(parameter_modes[2])
-    print(opcode[index+3])
-    # ABCDE
-    # C - mode of 1st parameter,  0 == position mode
-    # B - mode of 2nd parameter,  1 == immediate mode
-    # A - mode of 3rd parameter,  0 == position mode
+def decompose(opcode_list:list,instruct:int,index:int) -> dict:
+    instruct = [int(x) for x in str(instruct)]
+    # DE - two-digit opcode,      02 == opcode 2
+    #  C - mode of 1st parameter,  0 == position mode
+    #  B - mode of 2nd parameter,  1 == immediate mode
+    #  A - mode of 3rd parameter,  0 == position mode
+    param_modes = ((5-len(instruct)) * [0]) + instruct
 
-    # if parameter_modes[3] == 0:
-    #     val_1 = 0
-    # else:
-    #     val_1 = opcode[index+1]
-    # if parameter_modes[1] == 0:
-    #     val_2 = 0
-    # else:
-    #     val_2 = opcode[index+2]
-    # # if parameter_modes[0] == 0:
-    # #     addr = 0
-    # # else:
-    # #     addr = opcode[index+3]
-    # (opcode[idx + 3] if int(paramter_modes          [0]) == 0 else (idx + 3))
-    print(addr)
-    return {'first_param':val_1,'second_param':val_2,'addr':addr}
+    first = index + 1 if param_modes[2] == 1 else opcode_list[index + 1] # if first param is a 1 then use immediate position, else retrieve the position at the index
+    second = index + 2 if param_modes[1] == 1 else opcode_list[index + 2] # if second param is a 1 then use immediate position, else retrieve the position at the index
+    third =  opcode_list[index + 3] # Omitted
 
-def opcodeProgram(opcode) -> list:
+    return {'first_param':first,'second_param':second,'addr':third}
 
+def day5()->None:
+    opcode_list = parseFile()
     index = 0
-    while index < len(opcode):
-        instr = opcode[index]
-        op = int(str(instr)[-2:])
-        params = decompose(opcode,instr,index)
-
-        if op == 1:
-            opcode[params.get('addr')] = opcode[params.get('first_param')] + opcode[params.get('second_param')]
+    while index < len(opcode_list):
+        instruct = opcode_list[index]
+        operation = int(str(instruct)[-2:]) # Last two digits represent operation code
+        params = decompose(opcode_list,instruct,index) # Decompose instruction based on immediate vs position mode
+        if operation == 1: # add instruction increases index by 4
+            opcode_list[params.get('addr')] = opcode_list[params.get('first_param')] + opcode_list[params.get('second_param')]
             index += 4
-        elif op == 2:
-            opcode[params.get('addr')] = opcode[params.get('first_param')] * opcode[params.get('second_param')]
+        elif operation == 2: # sub instruction increases index by 4
+            opcode_list[params.get('addr')] = opcode_list[params.get('first_param')] * opcode_list[params.get('second_param')]
             index += 4
-        elif op == 3:
+        elif operation == 3: # storage instruction increases index by 2
+            opcode_list[params.get('first_param')] = input_instruction
+            index += 2
+        elif operation == 4: # print instruction increases index by 2
+            if opcode_list[index+2] == 99: # Check two indexes ahead. When putting this in it's own elif decompose will reach IndexError.
+                print("Operation Code 99, terminating. Final result = %s" % opcode_list[params.get('first_param')],flush=True)
+                break
+            else:
+                print("Output Diagnostic Test %s" % opcode_list[params.get('first_param')] ,flush=True)
+                index += 2
+        elif operation == 5:
+            if opcode_list[params.get('first_param')] != 0:
+                index = opcode_list[params.get('second_param')]
+            else:
+                index += 3 # Instructions with 5 increment by 3 Instruct,first_param,second_param
+        # Opcode 6 is jump-if-false: if the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+        elif operation == 6:
+            if opcode_list[params.get('first_param')] == 0:
+                index = opcode_list[params.get('second_param')]
+            else:
+                index += 3 # Instructions with 5 increment by 3 Instruct,first_param,second_param
+
+        # Opcode 7 is less than: if the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+        elif operation == 7:
+            if opcode_list[params.get('first_param')] < opcode_list[params.get('second_param')]:
+                opcode_list[params.get('addr')] = 1
+            else:
+                opcode_list[params.get('addr')] = 0
             index += 4
-        elif op == 4 or opcode == 99:
-            break
+        # Opcode 8 is equals: if the first parameter is equal to the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+        elif operation == 8:
+            if opcode_list[params.get('first_param')] == opcode_list[params.get('second_param')]:
+                opcode_list[params.get('addr')] = 1
+            else:
+                opcode_list[params.get('addr')] = 0
+            index += 4
+    return None
 
-        index += 5
-    print(opcode)
-    return opcode
-
-def day5(f1="day5.txt", p2 = False):
+def parseFile(f1:str="day5.txt")->list:
     with open(f1, 'r') as fp:
         text_from_file = fp.readlines()
     opcode = []
     for line in text_from_file:
-        for char in line.rstrip('\n').split(","):
-            if char.isdigit():
-                opcode.append(int(char))
-    opcodeProgram(opcode)
+        for char in line.split(","):
+            opcode.append(int(char))
+    return opcode
 
 def main():
     day5()
-    return 0
-
 
 if __name__ == "__main__":
     main()
