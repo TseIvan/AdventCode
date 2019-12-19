@@ -1,2 +1,2 @@
-# AdventCode
-My solutions for advent code December: https://adventofcode.com/
+# Advent Of Code 2019
+https://adventofcode.com/
