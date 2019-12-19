@@ -24,7 +24,7 @@ def decompose(opcode_list:list,instruct:int,index:int) -> dict:
     return {'first_param':first,'second_param':second,'addr':third}
 
 def day5(opcode_list:list = parseFile(),input_instruction:list=[5])->int:
-    print("-- Beginning New Run --")
+    # print("-- Beginning New Run --")
     opcode_list = copy.deepcopy(opcode_list)
     input_instruction = copy.deepcopy(input_instruction)
     index = 0
@@ -49,6 +49,7 @@ def day5(opcode_list:list = parseFile(),input_instruction:list=[5])->int:
                 break
             else:
                 print("Output Diagnostic Test %s" % opcode_list[params.get('first_param')] ,flush=True)
+                return opcode_list[params.get('first_param')]
                 index += 2
         elif operation == 5:
             if opcode_list[params.get('first_param')] != 0:
