@@ -1,4 +1,4 @@
-# Pkg.add("DataStructures");
+Pkg.add("DataStructures");
 using DataStructures;
 
 chem_dict = Dict()
@@ -24,11 +24,11 @@ function compute_ore_required(fuel_amount)
         else
             required = quantity - reserves[name] #amount we need
             runs = ceil(required/parse(Int64,chem_dict[name]["quantity"])) # Each run produces no fractional output. Only exacts
+            reserves[name] = runs * parse(Int64,chem_dict[name]["quantity"]) - required # Compute how much new stuff we got subtract required for current rxn
             for each in chem_dict[name]["required_mats"]
                 req_quant,req_name = each[1],each[2]
                 enqueue!(production_queue,(req_quant*runs,req_name)) # multiply each ele in mats by how many runs of production we need and enqueue
             end
-            reserves[name] = runs * parse(Int64,chem_dict[name]["quantity"]) - required # we store left over in reserves
         end
     end
     return reserves["ORE"]
