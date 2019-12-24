@@ -34,7 +34,7 @@ long int compute_rating(vector<vector<char>>& matrix, int row, int col){
 	return sum;
 }
 
-int biodiversity(vector<vector<char>>& matrix){
+vector<vector<char>> biodiversity(vector<vector<char>>& matrix){
 
 	// Adjacent tiles
 	vector<vector<vector<char>>> prev_layout;
@@ -81,9 +81,9 @@ int biodiversity(vector<vector<char>>& matrix){
 		// Check in previous then push back
 		for (auto prev:prev_layout){
 			if (prev == temp){
-				debug(temp); // Works
+				debug(temp); 
 				// cout << "terminated" << endl;
-				return compute_rating(temp, row, col);
+				return temp;
 			}
 		}
 		prev_layout.push_back(matrix);
@@ -106,9 +106,8 @@ int main(){
 		row.clear();
 	}
 
-	biodiversity(matrix);
-
-	// debug(matrix);
+	matrix = biodiversity(matrix);
+	long int rating = compute_rating(matrix,5,5); 
 
 	return 0;
 }
