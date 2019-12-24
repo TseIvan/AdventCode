@@ -26,3 +26,29 @@ with open('day22.txt','r') as fp:
             deck = deal_with_increment(int(line.split('deal with increment ')[1]),deck)
 
 print(deck.index(2019))
+
+# Part 2
+# find card in position 2020
+# deck = 119315717514047
+# repeat = 101741582076661
+
+# cut = (n + len(deck) + index) % len(deck)
+# deal = len(deck) - 1 - i
+# increment = modinverse(n,deck(len)) * index % len(deck)
+
+# Algorithm for part 2 provided. Need to read more on sequences in modulo
+# https://przybyl.io/solution-explanation-to-day-22-of-advent-of-code-2019.html
+# https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm
+# def egcd(a, b):
+#     if a == 0:
+#         return (b, 0, 1)
+#     else:
+#         g, y, x = egcd(b % a, a)
+#         return (g, x - (b // a) * y, y)
+#
+# def modinv(a, m):
+#     g, x, y = egcd(a, m)
+#     if g != 1:
+#         raise Exception('modular inverse does not exist')
+#     else:
+#         return x % m
