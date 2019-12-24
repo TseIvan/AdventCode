@@ -16,7 +16,7 @@ void debug(vector<vector<char>>& matrix){
 }
 long int compute_rating(vector<vector<char>>& matrix, int row, int col){
 	debug(matrix);
-	long int sum;
+	long int sum = 0;
 	// increasing powers of two: 1, 2, 4, 8, 16, 32
 	// 1, 2, 4, 8, 16, 
 	// 32, 64, 128, 256, 512,
@@ -25,7 +25,7 @@ long int compute_rating(vector<vector<char>>& matrix, int row, int col){
 	for(int x = 0; x < row; x++){
 		for(int y = 0; y < col; y++){
 			if (matrix[x][y] == '#'){
-				cout << x*5 + y << endl;
+				// cout << x*5 + y << endl;
 				sum += pow(2, x*5 + y);
 			}
 		}
