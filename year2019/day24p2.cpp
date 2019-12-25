@@ -1,94 +1,104 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include <cmath>
-
+#include <set>
+#include<tuple>
+#include<vector>
+#include <algorithm>
 using namespace std;
+int neighbors(const int x, const int y, const int z, vector<tuple<int, int, int>> bug_vec){
+    int total_neighbors = 0;
 
-void debug(vector<vector<char>>& matrix){
-	for(auto& row:matrix){
-		for(auto& col:row){
-			cout << col;
-		}
-		cout << endl;
-	}
+
+
+
+
+
+    return total_neighbors;
 }
-vector<vector<char>> emptyMatrix(){
-    vector<vector<char>> emptyMatrix;
-    vector<char> row;
-    for(int x = 0; x < 5; x++){
-		for(int y = 0; y < 5; y++){
-            if (x==2 && y==2){
-                row.push_back('?');
-            }else
-            {
-                row.push_back('.');
-            }
-		}
-        emptyMatrix.push_back(row);
-		row.clear();
-	}
-    return emptyMatrix;
-}
-vector<vector<char>> biodiversity(vector<vector<char>>& matrix){
+vector<tuple<int, int, int>> time(vector<tuple<int, int, int>> original){
+    vector<tuple<int, int, int>> updated_vec;
+    const int row = 5;
+    const int col = 5;
+    // Need to start at minimum level to highest level
+    // At each iteration*2 + 1 layers
+    
+    sort(original.begin(), original.end(), [](auto const &t1, auto const &t2) {
+        return get<2>(t1) < get<2>(t2); 
+    });
 
-	// Adjacent tiles
-	vector<vector<vector<char>>> prev_layout;
-	vector<vector<char>> temp(matrix);
-	const int row = 5;
-	const int col = 5;
-	int bugs = 0;
-	// Adjacent is only N W S E directions not diagonal
-	vector<int> p_x = {0,-1,0,1};
-	vector<int> p_y = {1,0,-1,0};
-	int delta_x;
-	int delta_y;
-
-	prev_layout.push_back(matrix);
-    for (int x = 0; x < row; x++){
-        for (int y = 0; y < col; y++){
-            bugs = 0;
-            // cout << matrix[x][y] << endl;
-            for (int dir = 0; dir < 4; dir++){
-                // For each direction >> check if outside dimensions
-                delta_x = x+p_x[dir];
-                delta_y = y+p_y[dir];	
-                if (delta_x >= 0 && delta_x < 5 && delta_y >= 0 && delta_y < 5){
-                    if (matrix[delta_x][delta_y] == '#'){
-                        bugs++;
+    // Time 1: z - > -1,0,1, Time 2: z - > -2,-1,0,1,2
+    for(int z = get<2>(original[0]) - 1; z < 2 + get<2>(original[original.size() - 1]); z++){
+        for(int y = 0; y < row; y++){
+            for (int x = 0; x < col; x++){
+                if (x != 2 && y != 2){ // Middle square is left blank for recursive. Do not create new bugs on this position
+                    int amt_neighbors = neighbors(x,y,z,original); // 
+                    // Rule sets for spawn and death are the same as previous
+                    if  (find(original.begin(),original.end(),(x,y,z)) != original.end()){ // original contains the tuple (x,y,z) its a '#'
+                        if (amt_neighbors == 1){
+                            updated_vec.push_back(make_tuple(x,y,z));
+                        }
+                    }else if (amt_neighbors > 0 && amt_neighbors <= 2){ //  its a '.' character
+                        updated_vec.push_back(make_tuple(x,y,z));
                     }
                 }
             }
-            // // Implement death and spawn
-            if (matrix[x][y] == '#' && bugs != 1){
-                temp[x][y] = '.';
-            }
-            else if (matrix[x][y] == '.' && bugs > 0 && bugs <=2){
-                temp[x][y] = '#';
-            }
         }
-    }	
-    debug(temp);
-    return matrix;
+    }
+    return updated_vec;
 }
 
 int main(){
 
 	ifstream infile("day24p2.txt");
 	string line;
-	vector<vector<char>> matrix;
-	vector<char> row;
 
+    vector<tuple<int, int, int> > vec;
+
+    int y = 0;
+    int x = 0;
+    int iteration = 10;
 	while(infile >> line){
+        x = 0;
 		for(int i = 0; i < line.size(); i++){
-			row.push_back(line[i]);
+            if (line[i] == '#'){
+                vec.push_back(make_tuple(x,y,0));
+            }
+            x++;
 		}
-		matrix.push_back(row);
-		row.clear();
-	}   
-	// biodiversity(matrix); // Level 0
-    matrix = emptyMatrix(); // Empty matrix works
-    debug(matrix);
-    //  How to store and retrieve stacked matrixes
+        y++;
+	}
+
+
+    time(vec);
+    
+    // // Test Sort ing
+    // vec.push_back(make_tuple(1,1,-1));
+    // vec.push_back(make_tuple(1,1,20));
+
+   
+    
+    
+    // for (int i = 0; i < vec.size(); i++)  
+    //     cout << get<0>(vec[i]) << " " 
+    //          << get<1>(vec[i]) << " " 
+    //          << get<2>(vec[i]) << "\n"; 
+
+    
+    // std::sort(vec.begin(), vec.end(), [](auto const &t1, auto const &t2) {
+    //     return get<2>(t1) < get<2>(t2); 
+    // });
+
+    // cout << get<2>(vec[vec.size() - 1]) << endl;
+    // // cout << vec.size() << endl;
+
+    // for (int i = 0; i < vec.size(); i++){
+       
+    //     cout << get<0>(vec[i]) << " " 
+    //             << get<1>(vec[i]) << " " 
+    //             << get<2>(vec[i]) << "\n"; 
+    // }
+
+    // cout << vec.size();
+
 	return 0;
 }
