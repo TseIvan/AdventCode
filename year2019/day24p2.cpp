@@ -1,7 +1,9 @@
 // To future self: Figure out how to search tuple in vector of tuples. Runtime is absolutely trash rn.
-// What I've tried 
+// What I've tried
 // if (find(vec.begin(), vec.end(), make_tuple(0,0,0)) != vec.end())
-// Throws error. 
+// Throws error.
+// If I can figure out how to implement depth properly I can avoid search
+// Test from -1,0,1. Initialize as vector<vector<vector<char>>> then for all depth > 1 => pushback all depth < -1 requires insert at pos 0.  
 
 #include <iostream>
 #include <fstream>
@@ -15,9 +17,9 @@ using namespace std;
 
 void printVector(vector<tuple<int, int, int>> v){
         for (int i = 0; i < v.size(); i++){
-            cout << get<0>(v[i]) << " " 
-            << get<1>(v[i]) << " " 
-            << get<2>(v[i]) << "\n"; 
+            cout << get<0>(v[i]) << " "
+            << get<1>(v[i]) << " "
+            << get<2>(v[i]) << "\n";
     }
 }
 bool vectorFindTuple(vector<tuple<int, int, int>> input_vec, int x, int y, int z){
@@ -25,16 +27,16 @@ bool vectorFindTuple(vector<tuple<int, int, int>> input_vec, int x, int y, int z
         for (int i = 0; i <  input_vec.size(); i++){
             if (make_tuple(x,y,z) == input_vec[i]){
                 return true;
-            } 
+            }
         }
         return false;
 }
 int neighbors(const int x, const int y, const int z, vector<tuple<int, int, int>> bug_vec){
     int total_neighbors = 0;
-    
+
 
     // https://gyazo.com/e09f41dc16c316137b5ce6ca2e95d87b >> diagram from AOC
-    // https://pastebin.com/3tYPUHZz >> output for the first 10 time iteration using dummy example given 
+    // https://pastebin.com/3tYPUHZz >> output for the first 10 time iteration using dummy example given
 
     // Compute all the levels below us
 
@@ -95,8 +97,8 @@ int neighbors(const int x, const int y, const int z, vector<tuple<int, int, int>
     for (int dir = 0; dir < 4; dir++){
         // For each direction >> check if outside dimensions
         delta_x = x+p_x[dir];
-        delta_y = y+p_y[dir];	
-        
+        delta_y = y+p_y[dir];
+
         if (x == 2 && y == 2) continue;
         if (delta_x >= 0 && delta_x < 5 && delta_y >= 0 && delta_y < 5){
             // cout << delta_x << " " << delta_y << " " << " " << z << " " << endl;
@@ -118,7 +120,7 @@ vector<tuple<int, int, int>> time(vector<tuple<int, int, int>> original){
     sort(original.begin(), original.end(), [](auto const &t1, auto const &t2) {
         return get<2>(t1) < get<2>(t2);
     });
-    
+
 
     // Time 1: z - > -1,0,1, Time 2: z - > -2,-1,0,1,2
     for(int z = get<2>(original[0]) - 1; z < 2 + get<2>(original[original.size() - 1]); z++){
@@ -150,7 +152,7 @@ int main(){
 
 	ifstream infile("day24.txt");
 	string line;
-    
+
     vector<tuple<int, int, int> > vec;
     int y = 0;
     int x = 0;
@@ -165,7 +167,7 @@ int main(){
 		}
         y++;
 	}
-  
+
     for (int iter = 0; iter < 200; iter++){
         vec = time(vec);
         cout <<  iter << endl;
@@ -174,6 +176,6 @@ int main(){
     printVector(vec);
 
     cout <<  "\n" << vec.size() << endl;
-    
+
 	return 0;
 }
