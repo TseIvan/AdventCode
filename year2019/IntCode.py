@@ -1,4 +1,7 @@
 import copy
+import sys
+import math
+# sys.maxsize
 
 def parseFile(f1:str="day5.txt")->list:
     with open(f1, 'r') as fp:
@@ -17,22 +20,32 @@ class IntCode:
         self.input = []
         self.output = []
         self.terminate = False
+        self.relative_base = 0
 
     def input_signal(self,input):
         self.input.append(input)
         self.compile()
 
+    def addMemory(self):
+        self.program += 10**6 * [0] # this is clearly stupid as fuck LMAO
+
     def decompose(self,instruct):
         instruct = [int(x) for x in str(instruct)]
         param_modes = ((5-len(instruct)) * [0]) + instruct
-        first = self.index + 1 if param_modes[2] == 1 else self.program[self.index + 1] # if first param is a 1 then use immediate position, else retrieve the position at the index
 
+        # need to modify 1,2,7,8 all require 3 params
+        # 5,6 only requires 2 params
+        # 3,4,9 requires 1 param
+        # we can avoid index errors like this
+
+        first = self.index + 1 if param_modes[2] == 1 else self.program[self.index + 1] # if first param is a 1 then use immediate position, else retrieve the position at the index
         try:
             second = self.index + 2 if param_modes[1] == 1 else self.program[self.index + 2]
             third =  self.index + 3 if param_modes[0] == 1 else self.program[self.index + 3]
         except(IndexError):
             second = 0
             third = 0
+
         return {'first':first,'second':second,'third':third}
 
     def modifyIndex(self,operation,boolean):
@@ -41,12 +54,12 @@ class IntCode:
         elif operation in [5,6]:
             if not boolean:
                 self.index += 3
-        elif operation in [3,4]:
+        elif operation in [3,4,9]:
             self.index += 2
         return
 
     def compile(self):
-
+        self.addMemory()
         while (self.index < len(self.program)):
             boolean = True
             instruct = self.program[self.index]
@@ -55,6 +68,7 @@ class IntCode:
                 self.terminate = True
                 return
             params = self.decompose(instruct)
+            print(instruct,params)
             if operation == 1:
                 self.program[params.get('third')] = self.program[params.get('first')] + self.program[params.get('second')]
             elif operation == 2:
@@ -79,6 +93,8 @@ class IntCode:
                 self.program[params.get('third')] = int( self.program[params.get('first')] < self.program[params.get('second')])
             elif operation == 8:
                 self.program[params.get('third')] = int( self.program[params.get('first')] == self.program[params.get('second')])
+            elif operation == 9: # Move index >> 2
+                self.relative_base += self.program[params.get('first')]
 
             self.modifyIndex(operation,boolean)
 
