@@ -1,5 +1,5 @@
 import copy
-
+from IntCode import IntCode
 def parseFile(f1:str="day5.txt")->list:
     with open(f1, 'r') as fp:
         text_from_file = fp.readlines()
@@ -80,7 +80,12 @@ def day5(opcode_list:list = parseFile(),input_instruction:list=[5])->int:
             index += 4
 
 def main():
-    day5()
+    # day5()
+    inputs = [1,5]
+    for index,programs in enumerate([IntCode(parseFile()) for x in range(2)]):
+        programs.input_signal(inputs[index])
+        programs.compile()
+        print(programs.output[-1])
 
 if __name__ == "__main__":
     main()

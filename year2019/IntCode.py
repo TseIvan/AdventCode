@@ -77,10 +77,7 @@ class IntCode:
             self.modifyIndex(operation,boolean)
 
 def main():
-    i = IntCode(parseFile())
-    i.input_signal(5)
-    i.compile()
-    print(i.output)
+    
     return
 
 if __name__ == "__main__":
