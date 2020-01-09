@@ -84,7 +84,6 @@ def main():
     inputs = [1,5]
     for index,programs in enumerate([IntCode(parseFile()) for x in range(2)]):
         programs.input_signal(inputs[index])
-        programs.compile()
         print(programs.output[-1])
 
 if __name__ == "__main__":

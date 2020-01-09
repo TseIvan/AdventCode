@@ -20,13 +20,19 @@ class IntCode:
 
     def input_signal(self,input):
         self.input.append(input)
+        self.compile()
 
     def decompose(self,instruct):
         instruct = [int(x) for x in str(instruct)]
         param_modes = ((5-len(instruct)) * [0]) + instruct
         first = self.index + 1 if param_modes[2] == 1 else self.program[self.index + 1] # if first param is a 1 then use immediate position, else retrieve the position at the index
-        second = self.index + 2 if param_modes[1] == 1 else self.program[self.index + 2] # if second param is a 1 then use immediate position, else retrieve the position at the index
-        third =  self.index + 3 if param_modes[0] == 1 else self.program[self.index + 3]
+
+        try:
+            second = self.index + 2 if param_modes[1] == 1 else self.program[self.index + 2]
+            third =  self.index + 3 if param_modes[0] == 1 else self.program[self.index + 3]
+        except(IndexError):
+            second = 0
+            third = 0
         return {'first':first,'second':second,'third':third}
 
     def modifyIndex(self,operation,boolean):
@@ -77,7 +83,7 @@ class IntCode:
             self.modifyIndex(operation,boolean)
 
 def main():
-    
+
     return
 
 if __name__ == "__main__":
