@@ -1,9 +1,5 @@
-// To future self: Figure out how to search tuple in vector of tuples. Runtime is absolutely trash rn.
-// What I've tried
-// if (find(vec.begin(), vec.end(), make_tuple(0,0,0)) != vec.end())
-// Throws error.
 // If I can figure out how to implement depth properly I can avoid search
-// Test from -1,0,1. Initialize as vector<vector<vector<char>>> then for all depth > 1 => pushback all depth < -1 requires insert at pos 0.  
+// Test from -1,0,1. Initialize as vector<vector<vector<char>>> then for all depth > 1 => pushback all depth < -1 requires insert at pos 0.
 
 #include <iostream>
 #include <fstream>
@@ -134,10 +130,10 @@ vector<tuple<int, int, int>> time(vector<tuple<int, int, int>> original){
                     // cout << x << " " << y << " " << z << " " << amt_neighbors << endl;
                     // Rule sets for spawn and death are the same as previous
                     if  (vectorFindTuple(original,x,y,z)){ // original contains the tuple (x,y,z) its a '#'
-                        if (amt_neighbors == 1 && vectorFindTuple(updated_vec,x,y,z) == false){
+                        if (amt_neighbors == 1){
                             updated_vec.push_back(make_tuple(x,y,z));
                         }
-                    }else if (amt_neighbors > 0 && amt_neighbors <= 2 && vectorFindTuple(updated_vec,x,y,z) == false){ //  its a '.' character
+                    }else if (amt_neighbors > 0 && amt_neighbors <= 2){ //  its a '.' character
                         updated_vec.push_back(make_tuple(x,y,z));
                     }
                 }

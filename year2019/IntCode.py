@@ -1,5 +1,13 @@
 import copy
 
+def parseFile(f1:str="day5.txt")->list:
+    with open(f1, 'r') as fp:
+        text_from_file = fp.readlines()
+    opcode = []
+    for line in text_from_file:
+        for char in line.split(","):
+            opcode.append(int(char))
+    return opcode
 
 class IntCode:
 
@@ -14,13 +22,14 @@ class IntCode:
         self.input.append(input)
 
     def decompose(self,instruct):
+        instruct = [int(x) for x in str(instruct)]
         param_modes = ((5-len(instruct)) * [0]) + instruct
         first = self.index + 1 if param_modes[2] == 1 else self.program[self.index + 1] # if first param is a 1 then use immediate position, else retrieve the position at the index
         second = self.index + 2 if param_modes[1] == 1 else self.program[self.index + 2] # if second param is a 1 then use immediate position, else retrieve the position at the index
         third =  self.index + 3 if param_modes[0] == 1 else self.program[self.index + 3]
         return {'first':first,'second':second,'third':third}
 
-    def modifyIndex(self,operation,boolean=False):
+    def modifyIndex(self,operation,boolean):
         if operation in [1,2,7,8]:
             self.index += 4
         elif operation in [5,6]:
@@ -31,43 +40,48 @@ class IntCode:
         return
 
     def compile(self):
-        boolean = True
-        instruct = self.program[self.index]
-        operation = int(str(instruct)[-2:])
-        params = self.decompose(instruct)
-        while self.index < len(self.program):
-            if instruct == 99:
+
+        while (self.index < len(self.program)):
+            boolean = True
+            instruct = self.program[self.index]
+            operation = int(str(instruct)[-2:])
+            if operation == 99: # Check op 99 before decompose or it will index error out.
                 self.terminate = True
                 return
-            if instruct == 1:
+            params = self.decompose(instruct)
+            if operation == 1:
                 self.program[params.get('third')] = self.program[params.get('first')] + self.program[params.get('second')]
-
-            elif instruct == 2:
+            elif operation == 2:
                 self.program[params.get('third')] = self.program[params.get('first')] * self.program[params.get('second')]
-            elif instruct == 3:
+            elif operation == 3:
                 if len(self.input) == 0:
                     return
                 self.program[params.get('first')] = self.input.pop(0)
-            elif instruct == 4:
-                self.output.append([params.get('first_param')])
-            elif instruct == 5:
+            elif operation == 4:
+                self.output.append(self.program[params.get('first')])
+            elif operation == 5:
                 if self.program[params.get('first')] != 0:
                     self.index = self.program[params.get('second')]
                 else:
                     boolean = False
-            elif instruct == 6:
-            # Opcode 6 is jump-if-false: if the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+            elif operation == 6:
                 if self.program[params.get('first')] == 0:
                     self.index = self.program[params.get('second')]
                 else:
                     boolean = False
-            elif instruct == 7:
-                self.program[params.get('third')] = int(self.program[params.get('first')] < self.program[params.get('second')])
-            elif instruct == 8:
-                self.program[params.get('third')] = int(self.program[params.get('first')] == self.program[params.get('second')])
+            elif operation == 7:
+                self.program[params.get('third')] = int( self.program[params.get('first')] < self.program[params.get('second')])
+            elif operation == 8:
+                self.program[params.get('third')] = int( self.program[params.get('first')] == self.program[params.get('second')])
 
             self.modifyIndex(operation,boolean)
-            break
 
+def main():
+    i = IntCode(parseFile())
+    i.input_signal(5)
+    i.compile()
+    print(i.output)
+    return
 
-        return
+if __name__ == "__main__":
+    main()

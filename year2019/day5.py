@@ -29,6 +29,7 @@ def day5(opcode_list:list = parseFile(),input_instruction:list=[5])->int:
     input_instruction = copy.deepcopy(input_instruction)
     index = 0
     while index < len(opcode_list):
+
         instruct = opcode_list[index]
         operation = int(str(instruct)[-2:]) # Last two digits represent operation code
         params = decompose(opcode_list,instruct,index) # Decompose instruction based on immediate vs position mode
