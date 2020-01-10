@@ -27,7 +27,7 @@ class IntCode:
         self.compile()
 
     def addMemory(self):
-        self.program += 10**6 * [0] # This actually worked LOL
+        self.program += 10**3 * [0] # This actually worked LOL
 
     def decompose(self,instruct,operation):
         instruct = [int(x) for x in str(instruct)]
@@ -78,7 +78,7 @@ class IntCode:
         return
 
     def compile(self):
-        self.addMemory()
+        self.addMemory() # Remove for day7
         while (self.index < len(self.program)):
             boolean = True
             instruct = self.program[self.index]
