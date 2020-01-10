@@ -1,6 +1,5 @@
-import sys
 from IntCode import IntCode, parseFile
-
+import matplotlib.pyplot as plt
 
 def facing(original,direction):
     if original == 'west': # West g
@@ -31,28 +30,27 @@ def run(color):
         init_dir = facing(init_dir,direction)
         x = x + dir_dict[init_dir][0]
         y = y + dir_dict[init_dir][1]
-    # print(len(dict))
+    print(len(dict))
     return dict
 
 def paint():
-    # eight capital letters.
-    # Each Letter is 6x6
     dict = run(1)
-    coord_list = [k for k,v in dict.items()]
-    ones = coord_list = [k for k,v in dict.items() if v == 1]
 
-    x_max = max(coord_list)[0]
-    x_min = min(coord_list)[0]
-    y_max = max(coord_list)[1]
-    y_min = min(coord_list)[1]
-    total = 0
-    for y in range(y_min-2,y_max+2):
-        for x in range(x_min-2,x_max+2):
-            if (x,y) in dict:
-                if (x,y) in ones:
-                    print('X',end='')
-                else:
-                    print(' ',end='')
-        print('\n')
-# run(0)
+    maxx = max(dict, key = lambda panel: panel[0])[0]
+    minx = min(dict, key = lambda panel: panel[0])[0]
+
+    xrange = maxx-minx+1 # end-start+1
+
+    maxy = max(dict, key = lambda panel: panel[1])[1]
+    miny = min(dict, key = lambda panel: panel[1])[1]
+
+    yrange = maxy-miny+1
+
+    grid = [[' ']*(yrange) for _ in range(xrange)]
+    for k,v in dict.items():
+        if v == 1:
+            grid[k[0]-minx][k[1]-miny] = '█'
+    [print(''.join(line)) for line in grid]
+
+run(0)
 paint()
