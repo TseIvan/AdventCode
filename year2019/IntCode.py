@@ -27,9 +27,9 @@ class IntCode:
         self.compile()
 
     def addMemory(self):
-        self.program += 10**6 * [0] # this is clearly stupid as fuck LMAO
+        self.program += 10**6 * [0] # This actually worked LOL
 
-    def decompose(self,instruct):
+    def decompose(self,instruct,operation):
         instruct = [int(x) for x in str(instruct)]
         param_modes = ((5-len(instruct)) * [0]) + instruct
 
@@ -37,14 +37,54 @@ class IntCode:
         # 5,6 only requires 2 params
         # 3,4,9 requires 1 param
         # we can avoid index errors like this
+        if operation in [1,2,7,8]:
+            if param_modes[2] == 0:
+                first = self.program[self.index + 1]
+            elif param_modes[2] == 1:
+                first = self.index + 1
+            elif param_modes[2] == 2:
+                first = self.program[self.index + 1] + self.relative_base
 
-        first = self.index + 1 if param_modes[2] == 1 else self.program[self.index + 1] # if first param is a 1 then use immediate position, else retrieve the position at the index
-        try:
-            second = self.index + 2 if param_modes[1] == 1 else self.program[self.index + 2]
-            third =  self.index + 3 if param_modes[0] == 1 else self.program[self.index + 3]
-        except(IndexError):
-            second = 0
-            third = 0
+            if param_modes[1] == 0:
+                second = self.program[self.index + 2]
+            elif param_modes[1] == 1:
+                second = self.index + 2
+            elif param_modes[1] == 2:
+                second = self.program[self.index + 2] + self.relative_base
+
+            if param_modes[0] == 0:
+                third = self.program[self.index + 3]
+            elif param_modes[0] == 1:
+                third = self.index + 3
+            elif param_modes[0] == 2:
+                third = self.program[self.index + 3] + self.relative_base
+
+        elif operation in [5,6]:
+            if param_modes[2] == 0:
+                first = self.program[self.index + 1]
+            elif param_modes[2] == 1:
+                first = self.index + 1
+            elif param_modes[2] == 2:
+                first = self.program[self.index + 1] + self.relative_base
+
+            if param_modes[1] == 0:
+                second = self.program[self.index + 2]
+            elif param_modes[1] == 1:
+                second = self.index + 2
+            elif param_modes[1] == 2:
+                second = self.program[self.index + 2] + self.relative_base
+
+            third = None
+
+        elif operation in [3,4,9]:
+            if param_modes[2] == 0:
+                first = self.program[self.index + 1]
+            elif param_modes[2] == 1:
+                first = self.index + 1
+            elif param_modes[2] == 2:
+                first = self.program[self.index + 1] + self.relative_base
+            second = None
+            third = None
 
         return {'first':first,'second':second,'third':third}
 
@@ -67,8 +107,7 @@ class IntCode:
             if operation == 99: # Check op 99 before decompose or it will index error out.
                 self.terminate = True
                 return
-            params = self.decompose(instruct)
-            print(instruct,params)
+            params = self.decompose(instruct,operation)
             if operation == 1:
                 self.program[params.get('third')] = self.program[params.get('first')] + self.program[params.get('second')]
             elif operation == 2:
