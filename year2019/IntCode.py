@@ -37,13 +37,17 @@ class IntCode:
         # 5,6 only requires 2 params
         # 3,4,9 requires 1 param
         # we can avoid index errors like this
-        if operation in [1,2,7,8]:
-            if param_modes[2] == 0:
-                first = self.program[self.index + 1]
-            elif param_modes[2] == 1:
-                first = self.index + 1
-            elif param_modes[2] == 2:
-                first = self.program[self.index + 1] + self.relative_base
+
+        first,second,third = None,None,None
+
+        if param_modes[2] == 0:
+            first = self.program[self.index + 1]
+        elif param_modes[2] == 1:
+            first = self.index + 1
+        elif param_modes[2] == 2:
+            first = self.program[self.index + 1] + self.relative_base
+
+        if operation not in [3,4,9]:
 
             if param_modes[1] == 0:
                 second = self.program[self.index + 2]
@@ -51,6 +55,8 @@ class IntCode:
                 second = self.index + 2
             elif param_modes[1] == 2:
                 second = self.program[self.index + 2] + self.relative_base
+
+        if operation in [1,2,7,8]:
 
             if param_modes[0] == 0:
                 third = self.program[self.index + 3]
@@ -58,33 +64,6 @@ class IntCode:
                 third = self.index + 3
             elif param_modes[0] == 2:
                 third = self.program[self.index + 3] + self.relative_base
-
-        elif operation in [5,6]:
-            if param_modes[2] == 0:
-                first = self.program[self.index + 1]
-            elif param_modes[2] == 1:
-                first = self.index + 1
-            elif param_modes[2] == 2:
-                first = self.program[self.index + 1] + self.relative_base
-
-            if param_modes[1] == 0:
-                second = self.program[self.index + 2]
-            elif param_modes[1] == 1:
-                second = self.index + 2
-            elif param_modes[1] == 2:
-                second = self.program[self.index + 2] + self.relative_base
-
-            third = None
-
-        elif operation in [3,4,9]:
-            if param_modes[2] == 0:
-                first = self.program[self.index + 1]
-            elif param_modes[2] == 1:
-                first = self.index + 1
-            elif param_modes[2] == 2:
-                first = self.program[self.index + 1] + self.relative_base
-            second = None
-            third = None
 
         return {'first':first,'second':second,'third':third}
 
