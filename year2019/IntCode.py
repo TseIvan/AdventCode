@@ -15,12 +15,23 @@ def parseFile(f1:str="day5.txt")->list:
 class IntCode:
 
     def __init__(self,program):
+
+        self.programCopy = copy.deepcopy(program) # List
         self.program = copy.deepcopy(program) # List
         self.index = 0
         self.input = []
         self.output = []
         self.terminate = False
         self.relative_base = 0
+    # day15 avoids backtracking
+    def duplicate(self):
+        dupe = IntCode(self.programCopy)
+        dupe.index = self.index
+        dupe.input = self.input
+        dupe.output = self.output
+        dupe.terminate = self.terminate
+        dupe.relative_base = self.relative_base
+        return dupe
 
     def input_signal(self,input):
         self.input.append(input)
