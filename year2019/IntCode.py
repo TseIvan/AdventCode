@@ -124,7 +124,6 @@ class IntCode:
                 self.program[params.get('third')] = int( self.program[params.get('first')] == self.program[params.get('second')])
             elif operation == 9: # Move index >> 2
                 self.relative_base += self.program[params.get('first')]
-
             self.modifyIndex(operation,boolean)
 
 def main():

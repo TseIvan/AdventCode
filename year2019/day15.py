@@ -25,26 +25,27 @@ def run():
 
     # Storage structure -> list [tuple(int x,int y) , class:IntCode program, steps:int, direction:str]
     # Initialize start
-    [heapq.heappush(h,[updatePos(0,0,dir),program,0,dir]) for dir in dir_dict.keys()]
+    for dir in dir_dict.keys():
+        heapq.heappush(h,[updatePos(0,0,dir),program,0,dir])
 
     while len(h):
-        (x,y),prog,steps,dir = heapq.heappop(h)
-        dupe = prog.duplicate() # Create new duplicated instance
-        dupe.input_signal(dir_dict[dir].get('input'))
-        status = dupe.output.pop(0)
-        # print(x,y,status,dir)
-        if status == 2:
-            visited[(x,y)] = "X"
-            print(steps)
-            return(steps)
-        elif status == 1:
-        #     print(x,y,status,dir)
-            visited[(x,y)] = " "
-            for dir in dir_dict.keys():
-                x,y = updatePos(x,y,dir)
-                if (x,y) not in visited.keys():
-                    heapq.heappush(h,[(x,y),dupe.duplicate(),steps+1,dir])
-        elif status == 0:
-            visited[(x,y)] = "█"
+         (x,y),prog,steps,dir = heapq.heappop(h)
+         prog.input_signal(dir_dict[dir].get('input'))
+         status = prog.output.pop(0)
+         dupe = prog.duplicate() # Create new duplicated instance
+         if status == 0:
+             visited[(x,y)] = '█'
+         elif status == 1:
+             visited[(x,y)] = " "
+             for dir in dir_dict.keys():
+                 x,y = updatePos(x,y,dir)
+                 if (x,y) not in visited.keys():
+                     heapq.heappush(h,[(x,y),dupe,steps+1,dir])
+         elif status == 2:
+             visited[(x,y)] = "0"
+             return(steps)
+
+
+
 
 run()
